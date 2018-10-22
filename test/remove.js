@@ -26,10 +26,10 @@ describe('DELETE /binaries/:id', function () {
                 data: JSON.stringify({
                   type: 'image'
                 }),
-                content: fs.createReadStream(__dirname + '/images/car.jpg'),
+                content: fs.createReadStream(__dirname + '/images/image.png'),
                 something: [
-                    fs.createReadStream(__dirname + '/images/car.jpg'),
-                    fs.createReadStream(__dirname + '/images/car.jpg')
+                    fs.createReadStream(__dirname + '/images/image.png'),
+                    fs.createReadStream(__dirname + '/images/image.png')
                 ]
             },
             auth: {

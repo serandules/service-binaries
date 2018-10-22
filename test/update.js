@@ -33,10 +33,10 @@ describe('PUT /binaries/:id', function () {
                 data: JSON.stringify({
                   type: 'image'
                 }),
-                content: fs.createReadStream(__dirname + '/images/car.jpg'),
+                content: fs.createReadStream(__dirname + '/images/image.png'),
                 something: [
-                    fs.createReadStream(__dirname + '/images/car.jpg'),
-                    fs.createReadStream(__dirname + '/images/car.jpg')
+                    fs.createReadStream(__dirname + '/images/image.png'),
+                    fs.createReadStream(__dirname + '/images/image.png')
                 ]
             },
             auth: {
@@ -113,8 +113,8 @@ describe('PUT /binaries/:id', function () {
             formData: {
                 data: JSON.stringify(v0),
                 something: [
-                    fs.createReadStream(__dirname + '/images/car.jpg'),
-                    fs.createReadStream(__dirname + '/images/car.jpg')
+                    fs.createReadStream(__dirname + '/images/image.png'),
+                    fs.createReadStream(__dirname + '/images/image.png')
                 ]
             },
             auth: {
@@ -143,10 +143,10 @@ describe('PUT /binaries/:id', function () {
                 method: 'PUT',
                 formData: {
                     data: JSON.stringify(v1),
-                    content:fs.createReadStream(__dirname + '/images/car.jpg'),
+                    content:fs.createReadStream(__dirname + '/images/image.png'),
                     something: [
-                        fs.createReadStream(__dirname + '/images/car.jpg'),
-                        fs.createReadStream(__dirname + '/images/car.jpg')
+                        fs.createReadStream(__dirname + '/images/image.png'),
+                        fs.createReadStream(__dirname + '/images/image.png')
                     ]
                 },
                 auth: {
@@ -181,10 +181,10 @@ describe('PUT /binaries/:id', function () {
             method: 'PUT',
             formData: {
                 data: JSON.stringify(v0),
-                content: fs.createReadStream(__dirname + '/images/car.jpg'),
+                content: fs.createReadStream(__dirname + '/images/image.png'),
                 something: [
-                    fs.createReadStream(__dirname + '/images/car.jpg'),
-                    fs.createReadStream(__dirname + '/images/car.jpg')
+                    fs.createReadStream(__dirname + '/images/image.png'),
+                    fs.createReadStream(__dirname + '/images/image.png')
                 ]
             },
             auth: {

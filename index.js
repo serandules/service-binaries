@@ -1,5 +1,6 @@
 var log = require('logger')('service-binaries');
 var fs = require('fs');
+var async = require('async');
 var bodyParser = require('body-parser');
 
 var utils = require('utils');
@@ -14,32 +15,22 @@ var Binaries = require('model-binaries');
 var validators = require('./validators');
 var sanitizers = require('./sanitizers');
 
-var bucket = utils.bucket('binaries.serandives.com');
-
-var upload = function (name, stream, done) {
-  utils.s3().upload({
-    Bucket: bucket,
-    Key: name,
-    Body: stream
-  }, function (err) {
-    done(err, name);
-  });
+var plugins = {
+  image: require('./plugins/image')
 };
 
-var update = function (found, data, stream, done) {
+var update = function (plugin, found, stream, data, done) {
   if (!stream) {
     return done(null, data);
   }
-  stream = fs.createReadStream(stream.path);
-  upload(found.id, stream, function (err, id) {
+  plugin(found.id, stream.path, function (err) {
     if (err) {
       return done(err);
     }
-    data.content = id;
+    data.content = found.id;
     done(null, data);
   });
 };
-
 
 module.exports = function (router) {
   router.use(serandi.many);
@@ -54,18 +45,24 @@ module.exports = function (router) {
   router.post('/', validators.create, sanitizers.create, function (req, res) {
     var stream = req.streams.content;
     stream = stream[0];
-    stream = fs.createReadStream(stream.path);
     var data = req.body;
+    var type = data.type;
+    var plugin = plugins[type];
+    if (!plugin) {
+      log.error('binaries:no-plugin', 'type:%s', type);
+      return res.pond(errors.serverError());
+    }
     data.content = 'dummy';
     Binaries.create(req.body, function (err, binary) {
       if (err) {
         log.error('binaries:create', err);
         return res.pond(errors.serverError());
       }
-      upload(binary.id, stream, function (err, id) {
+      var id = binary.id;
+      plugin(id, stream.path, function (err) {
         if (err) {
-          log.error('binaries:upload', err);
-          Binaries.remove({_id: binary.id}, function (err) {
+          log.error('binaries:create:plugin-error', 'id:%s type:%s path:%s', id, type, stream.path, err);
+          Binaries.remove({_id: id}, function (err) {
             if (err) {
               log.error('binaries:remove-failed', err);
             }
@@ -78,24 +75,31 @@ module.exports = function (router) {
             return res.pond(errors.serverError());
           }
           binary.content = id;
-          res.locate(binary.id).status(201).send(binary);
+          res.locate(id).status(201).send(binary);
         });
       });
     });
   });
 
   router.put('/:id', validators.update, sanitizers.update, function (req, res) {
-    var data = req.body;
     var stream = req.streams.content || [];
     stream = stream[0];
-    update(req.found, data, stream, function (err, data) {
+    var found = req.found;
+    var data = req.body;
+    var type = data.type;
+    var plugin = plugins[type];
+    if (!plugin) {
+      log.error('binaries:no-plugin', 'type:%s', type);
+      return res.pond(errors.serverError());
+    }
+    update(plugin, found, stream, data, function (err, data) {
       if (err) {
-        log.error('binaries:update-binary', err);
+        log.error('binaries:update:plugin-error', 'id: %s, type: %s, path: %s', found.id, type, stream.path, err);
         return res.pond(errors.serverError());
       }
-      Binaries.findOneAndUpdate({_id: req.found.id}, data, {new: true}, function (err, binary) {
+      Binaries.findOneAndUpdate({_id: found.id}, data, {new: true}, function (err, binary) {
         if (err) {
-          log.error('binaries:update-content', err);
+          log.error('binaries:update', err);
           return res.pond(errors.serverError());
         }
         res.locate(binary.id).status(200).send(binary);

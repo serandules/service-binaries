@@ -47,7 +47,7 @@ describe('GET /binaries/:id', function () {
           data: JSON.stringify({
             type: 'image'
           }),
-          content: fs.createReadStream(__dirname + '/images/car.jpg'),
+          content: fs.createReadStream(__dirname + '/images/image.png'),
         },
         auth: {
           bearer: user.token

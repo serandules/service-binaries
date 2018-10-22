@@ -18,6 +18,32 @@ describe('POST /binaries', function () {
     });
   });
 
+  var validateImages = function (id, done) {
+    var utils = require('utils');
+    var bucketImages = utils.bucket('autos.serandives.com');
+    utils.s3().getObject({
+      Bucket: bucketImages,
+      Key: 'images/800x450/' + id
+    }, function (err, o) {
+      if (err) {
+        return done(err);
+      }
+      should.exist(o);
+      should.exist(o.Body);
+      utils.s3().getObject({
+        Bucket: bucketImages,
+        Key: 'images/288x162/' + id
+      }, function (err, o) {
+        if (err) {
+          return done(err);
+        }
+        should.exist(o);
+        should.exist(o.Body);
+        done();
+      });
+    });
+  };
+
   it('with no media type', function (done) {
     request({
       uri: pot.resolve('accounts', '/apis/v/binaries'),
@@ -72,8 +98,8 @@ describe('POST /binaries', function () {
           type: 'image'
         }),
         something: [
-          fs.createReadStream(__dirname + '/images/car.jpg'),
-          fs.createReadStream(__dirname + '/images/car.jpg')
+          fs.createReadStream(__dirname + '/images/image.png'),
+          fs.createReadStream(__dirname + '/images/image.png')
         ]
       },
       auth: {
@@ -99,10 +125,10 @@ describe('POST /binaries', function () {
       method: 'POST',
       formData: {
         data: JSON.stringify({}),
-        content: fs.createReadStream(__dirname + '/images/car.jpg'),
+        content: fs.createReadStream(__dirname + '/images/image.png'),
         something: [
-          fs.createReadStream(__dirname + '/images/car.jpg'),
-          fs.createReadStream(__dirname + '/images/car.jpg')
+          fs.createReadStream(__dirname + '/images/image.png'),
+          fs.createReadStream(__dirname + '/images/image.png')
         ]
       },
       auth: {
@@ -130,10 +156,10 @@ describe('POST /binaries', function () {
         data: JSON.stringify({
           type: 'image'
         }),
-        content: fs.createReadStream(__dirname + '/images/car.jpg'),
+        content: fs.createReadStream(__dirname + '/images/image.png'),
         something: [
-          fs.createReadStream(__dirname + '/images/car.jpg'),
-          fs.createReadStream(__dirname + '/images/car.jpg')
+          fs.createReadStream(__dirname + '/images/image.png'),
+          fs.createReadStream(__dirname + '/images/image.png')
         ]
       },
       auth: {
@@ -153,7 +179,7 @@ describe('POST /binaries', function () {
       b.content.should.equal(b.id);
       should.exist(r.headers['location']);
       r.headers['location'].should.equal(pot.resolve('accounts', '/apis/v/binaries/' + b.id));
-      done();
+      validateImages(b.id, done);
     });
   });
 
