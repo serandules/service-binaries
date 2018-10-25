@@ -20,7 +20,7 @@ describe('POST /binaries', function () {
 
   var validateImages = function (id, done) {
     var utils = require('utils');
-    var bucketImages = utils.bucket('autos.serandives.com');
+    var bucketImages = utils.bucket('images.serandives.com');
     utils.s3().getObject({
       Bucket: bucketImages,
       Key: 'images/800x450/' + id

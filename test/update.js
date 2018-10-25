@@ -106,7 +106,7 @@ describe('PUT /binaries/:id', function () {
     });
 
     it('with valid fields', function (done) {
-        var v0 = _.cloneDeep(binary);
+        var v0 = pot.clone(binary);
         request({
             uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
             method: 'PUT',
@@ -131,10 +131,10 @@ describe('PUT /binaries/:id', function () {
             should.exist(v1.user);
             should.exist(v1.type);
             should.exist(v1.content);
-            v1.id.should.equal(v0.id);
-            v1.user.should.equal(v0.user);
+            v1.id.should.equal(binary.id);
+            v1.user.should.equal(binary.user);
             v1.type.should.equal('image');
-            v1.content.should.equal(v0.id);
+            v1.content.should.equal(binary.id);
             should.exist(r.headers['location']);
             r.headers['location'].should.equal(pot.resolve('accounts', '/apis/v/binaries/' + v1.id));
             delete v1.content;
@@ -175,7 +175,7 @@ describe('PUT /binaries/:id', function () {
     });
 
     it('by unauthorized user', function (done) {
-        var v0 = _.cloneDeep(binary);
+        var v0 = pot.clone(binary);
         request({
             uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
             method: 'PUT',
@@ -205,7 +205,7 @@ describe('PUT /binaries/:id', function () {
     });
 
     it('invalid id', function (done) {
-        var v0 = _.cloneDeep(binary);
+        var v0 = pot.clone(binary);
         request({
             uri: pot.resolve('accounts', '/apis/v/binaries/invalid'),
             method: 'PUT',

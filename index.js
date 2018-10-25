@@ -32,17 +32,17 @@ var update = function (plugin, found, stream, data, done) {
   });
 };
 
-module.exports = function (router) {
+module.exports = function (router, done) {
   router.use(serandi.many);
   router.use(serandi.ctx);
-  router.use(auth({}));
+  router.use(auth());
   router.use(throttle.apis('binaries'));
   router.use(bodyParser.json());
 
   /**
    * {"name": "serandives app"}
    */
-  router.post('/', validators.create, sanitizers.create, function (req, res) {
+  router.post('/', validators.create, sanitizers.create, function (req, res, next) {
     var stream = req.streams.content;
     stream = stream[0];
     var data = req.body;
@@ -55,8 +55,7 @@ module.exports = function (router) {
     data.content = 'dummy';
     Binaries.create(req.body, function (err, binary) {
       if (err) {
-        log.error('binaries:create', err);
-        return res.pond(errors.serverError());
+        return next(err);
       }
       var id = binary.id;
       plugin(id, stream.path, function (err) {
@@ -81,7 +80,7 @@ module.exports = function (router) {
     });
   });
 
-  router.put('/:id', validators.update, sanitizers.update, function (req, res) {
+  router.put('/:id', validators.update, sanitizers.update, function (req, res, next) {
     var stream = req.streams.content || [];
     stream = stream[0];
     var found = req.found;
@@ -94,27 +93,21 @@ module.exports = function (router) {
     }
     update(plugin, found, stream, data, function (err, data) {
       if (err) {
-        log.error('binaries:update:plugin-error', 'id: %s, type: %s, path: %s', found.id, type, stream.path, err);
-        return res.pond(errors.serverError());
+        return next(err);
       }
-      Binaries.findOneAndUpdate({_id: found.id}, data, {new: true}, function (err, binary) {
+      mongutils.update(Binaries, req.query, data, function (err, binary) {
         if (err) {
-          log.error('binaries:update', err);
-          return res.pond(errors.serverError());
+          return next(err);
         }
         res.locate(binary.id).status(200).send(binary);
       });
     });
   });
 
-  router.get('/:id', validators.findOne, sanitizers.findOne, function (req, res) {
+  router.get('/:id', validators.findOne, sanitizers.findOne, function (req, res, next) {
     mongutils.findOne(Binaries, req.query, function (err, binary) {
       if (err) {
-        log.error('binaries:find-one', err);
-        return res.pond(errors.serverError());
-      }
-      if (!binary) {
-        return res.pond(errors.notFound());
+        return next(err);
       }
       res.send(binary);
     });
@@ -123,33 +116,24 @@ module.exports = function (router) {
   /**
    * /binaries?data={}
    */
-  router.get('/', validators.find, sanitizers.find, function (req, res) {
+  router.get('/', validators.find, sanitizers.find, function (req, res, next) {
     mongutils.find(Binaries, req.query.data, function (err, binaries, paging) {
       if (err) {
-        log.error('binaries:find', err);
-        return res.pond(errors.serverError());
+        return next(err);
       }
       res.many(binaries, paging);
     });
   });
 
-  router.delete('/:id', function (req, res) {
-    if (!mongutils.objectId(req.params.id)) {
-      return res.pond(errors.notFound());
-    }
-    Binaries.remove({
-      user: req.user.id,
-      _id: req.params.id
-    }, function (err, o) {
+  router.delete('/:id', validators.findOne, sanitizers.findOne, function (req, res, next) {
+    mongutils.remove(Binaries, req.query, function (err) {
       if (err) {
-        log.error('binaries:remove', err);
-        return res.pond(errors.serverError());
-      }
-      if (!o.n) {
-        return res.pond(errors.notFound());
+        return next(err);
       }
       res.status(204).end();
     });
   });
+
+  done();
 };
 
