@@ -25,8 +25,10 @@ var upload = function (name, stream, done) {
 var save800x450 = function (id, path, done) {
   var name = 'images/800x450/' + id;
   var transformer = sharp()
-    .resize(800, 450)
-    .crop(sharp.gravity.center)
+    .resize({
+      width: 800,
+      height: 450
+    })
     .jpeg()
     .on('error', function (err) {
       log.error('images:crop', 'id:%s', id, err);
@@ -39,7 +41,10 @@ var save288x162 = function (id, path, done) {
   var name = 'images/288x162/' + id;
   var transformer = sharp()
     .resize(288, 162)
-    .crop(sharp.gravity.center)
+    .resize({
+      width: 288,
+      height: 162
+    })
     .jpeg()
     .on('error', function (err) {
       log.error('images:crop', 'id:%s', id, err);
