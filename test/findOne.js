@@ -232,6 +232,7 @@ describe('GET /binaries/:id', function () {
             group: groups.public.id,
             actions: ['read']
           });
+          binary.visibility['*'].groups.push(groups.public.id);
           request({
             uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
             method: 'PUT',
