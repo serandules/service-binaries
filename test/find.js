@@ -290,31 +290,10 @@ describe('GET /binaries', function () {
                 should.exist(b);
                 should.exist(b.length);
                 b.length.should.equal(5);
-                async.each(b, function (v, ran) {
-                    should.exist(v.user);
-                    v.user.should.equal(client.users[2].profile.id);
-                    v.permissions.push({
-                        group: groups.public.id,
-                        actions: ['read']
-                    });
-                    v.visibility['*'].groups.push(groups.public.id);
-                    request({
-                        uri: pot.resolve('accounts', '/apis/v/binaries/' + v.id),
-                        method: 'PUT',
-                        formData: {
-                            data: JSON.stringify(v)
-                        },
-                        auth: {
-                            bearer: client.users[2].token
-                        },
-                        json: true
-                    }, function (e, r, b) {
-                        if (e) {
-                            return ran(e);
-                        }
-                        r.statusCode.should.equal(200);
-                        ran();
-                    });
+                async.each(b, function (b, ran) {
+                    should.exist(b.user);
+                    b.user.should.equal(client.users[2].profile.id);
+                    pot.publish('accounts', 'binaries', b.id, client.users[2].token, client.admin.token, ran);
                 }, function (err) {
                     if (err) {
                         return done(err);

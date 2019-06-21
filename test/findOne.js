@@ -228,28 +228,10 @@ describe('GET /binaries/:id', function () {
           should.exist(b.code);
           should.exist(b.message);
           b.code.should.equal(errors.notFound().data.code);
-          binary.permissions.push({
-            group: groups.public.id,
-            actions: ['read']
-          });
-          binary.visibility['*'].groups.push(groups.public.id);
-          request({
-            uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
-            method: 'PUT',
-            formData: {
-              data: JSON.stringify(binary)
-            },
-            auth: {
-              bearer: client.users[0].token
-            },
-            json: true
-          }, function (e, r, b) {
-            if (e) {
-              return done(e);
+          pot.publish('accounts', 'binaries', binary.id, client.users[0].token, client.admin.token, function (err) {
+            if (err) {
+              return done(err);
             }
-            r.statusCode.should.equal(200);
-            should.exist(b);
-            validateBinary([b]);
             request({
               uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
               method: 'GET',

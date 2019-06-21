@@ -76,6 +76,13 @@ module.exports = function (router, done) {
       });
     });
 
+  router.post('/:id',
+    serandi.json,
+    serandi.transit({
+      workflow: 'model',
+      model: Binaries
+  }));
+
   router.put('/:id',
     serandi.multipart,
     serandi.update(Binaries),
