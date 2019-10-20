@@ -4,7 +4,7 @@ var utils = require('utils');
 var async = require('async');
 var sharp = require('sharp');
 
-var bucket = utils.bucket('images.serandives.com');
+var bucket = utils.bucket('serandives-images');
 
 var upload = function (name, stream, done) {
   utils.s3().upload({
