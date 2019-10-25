@@ -14,7 +14,7 @@
     "express": "4.*",
     "lodash": "4.17.4",
     "async": "1.*",
-    "sharp": "0.21.0",
+    "sharp": "0.23.1",
     "logger": "serandules/logger#master",
     "utils": "serandules/utils#master",
     "errors": "serandules/errors#master",

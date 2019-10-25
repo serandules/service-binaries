@@ -1,10 +1,13 @@
 var log = require('logger')('service-binaries:plugins:image');
 var fs = require('fs');
+var path = require('path');
 var utils = require('utils');
 var async = require('async');
 var sharp = require('sharp');
 
 var bucket = utils.bucket('serandives-images');
+
+var overlay = fs.readFileSync(path.join(__dirname, '..', 'overlay.png'));
 
 var upload = function (name, stream, done) {
   utils.s3().upload({
@@ -29,6 +32,7 @@ var save800x450 = function (id, path, done) {
       width: 800,
       height: 450
     })
+    .composite([{ input: overlay, top: 340, left: 210, blend: 'screen'}])
     .jpeg()
     .on('error', function (err) {
       log.error('images:crop', 'id:%s', id, err);
