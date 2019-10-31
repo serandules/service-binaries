@@ -115,7 +115,7 @@ describe('GET /binaries', function () {
             should.exist(binary.id);
             should.exist(binary.user);
             should.exist(binary.createdAt);
-            should.exist(binary.updatedAt);
+            should.exist(binary.modifiedAt);
             should.not.exist(binary._id);
             should.not.exist(binary.__v);
         });

@@ -76,7 +76,7 @@ describe('GET /binaries/:id', function () {
       should.exist(binary.id);
       should.exist(binary.user);
       should.exist(binary.createdAt);
-      should.exist(binary.updatedAt);
+      should.exist(binary.modifiedAt);
       should.exist(binary.content);
       should.not.exist(binary._id);
       should.not.exist(binary.__v);
