@@ -20,7 +20,7 @@ describe('DELETE /binaries/:id', function () {
 
     var create = function (user, done) {
         request({
-            uri: pot.resolve('autos', '/apis/v/binaries'),
+            uri: pot.resolve('www', '/apis/v/binaries'),
             method: 'POST',
             formData: {
                 data: JSON.stringify({
@@ -48,7 +48,7 @@ describe('DELETE /binaries/:id', function () {
             b.type.should.equal('image');
             b.content.should.equal(b.id);
             should.exist(r.headers['location']);
-            r.headers['location'].should.equal(pot.resolve('autos', '/apis/v/binaries/' + b.id));
+            r.headers['location'].should.equal(pot.resolve('www', '/apis/v/binaries/' + b.id));
             done(null, b);
         });
     };
@@ -59,7 +59,7 @@ describe('DELETE /binaries/:id', function () {
                 return done(err);
             }
             request({
-                uri: pot.resolve('autos', '/apis/v/binaries/' + binary.id),
+                uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
                 method: 'DELETE',
                 auth: {
                     bearer: client.users[1].token
@@ -85,7 +85,7 @@ describe('DELETE /binaries/:id', function () {
                 return done(err);
             }
             request({
-                uri: pot.resolve('autos', '/apis/v/binaries/' + binary.id),
+                uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
                 method: 'DELETE',
                 auth: {
                     bearer: client.users[0].token
@@ -103,7 +103,7 @@ describe('DELETE /binaries/:id', function () {
 
     it('non existing', function (done) {
         request({
-            uri: pot.resolve('autos', '/apis/v/binaries/59417b1220873e577df88aa2'),
+            uri: pot.resolve('www', '/apis/v/binaries/59417b1220873e577df88aa2'),
             method: 'DELETE',
             auth: {
                 bearer: client.users[0].token

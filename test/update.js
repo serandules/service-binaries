@@ -27,7 +27,7 @@ describe('PUT /binaries/:id', function () {
 
     var create = function (user, done) {
         request({
-            uri: pot.resolve('accounts', '/apis/v/binaries'),
+            uri: pot.resolve('www', '/apis/v/binaries'),
             method: 'POST',
             formData: {
                 data: JSON.stringify({
@@ -55,14 +55,14 @@ describe('PUT /binaries/:id', function () {
             b.type.should.equal('image');
             b.content.should.equal(b.id);
             should.exist(r.headers['location']);
-            r.headers['location'].should.equal(pot.resolve('accounts', '/apis/v/binaries/' + b.id));
+            r.headers['location'].should.equal(pot.resolve('www', '/apis/v/binaries/' + b.id));
             done(null, b);
         });
     };
 
     it('with no media type', function (done) {
         request({
-            uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
+            uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
             method: 'PUT',
             auth: {
                 bearer: client.users[0].token
@@ -83,7 +83,7 @@ describe('PUT /binaries/:id', function () {
 
     it('with unsupported media type', function (done) {
         request({
-            uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
+            uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/xml'
@@ -108,7 +108,7 @@ describe('PUT /binaries/:id', function () {
     it('with valid fields', function (done) {
         var v0 = pot.clone(binary);
         request({
-            uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
+            uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
             method: 'PUT',
             formData: {
                 data: JSON.stringify(v0),
@@ -136,10 +136,10 @@ describe('PUT /binaries/:id', function () {
             v1.type.should.equal('image');
             v1.content.should.equal(binary.id);
             should.exist(r.headers['location']);
-            r.headers['location'].should.equal(pot.resolve('accounts', '/apis/v/binaries/' + v1.id));
+            r.headers['location'].should.equal(pot.resolve('www', '/apis/v/binaries/' + v1.id));
             delete v1.content;
             request({
-                uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
+                uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
                 method: 'PUT',
                 formData: {
                     data: JSON.stringify(v1),
@@ -168,7 +168,7 @@ describe('PUT /binaries/:id', function () {
                 v2.type.should.equal('image');
                 v2.content.should.equal(v1.id);
                 should.exist(r.headers['location']);
-                r.headers['location'].should.equal(pot.resolve('accounts', '/apis/v/binaries/' + v2.id));
+                r.headers['location'].should.equal(pot.resolve('www', '/apis/v/binaries/' + v2.id));
                 done();
             });
         });
@@ -177,7 +177,7 @@ describe('PUT /binaries/:id', function () {
     it('by unauthorized user', function (done) {
         var v0 = pot.clone(binary);
         request({
-            uri: pot.resolve('accounts', '/apis/v/binaries/' + binary.id),
+            uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
             method: 'PUT',
             formData: {
                 data: JSON.stringify(v0),
@@ -207,7 +207,7 @@ describe('PUT /binaries/:id', function () {
     it('invalid id', function (done) {
         var v0 = pot.clone(binary);
         request({
-            uri: pot.resolve('accounts', '/apis/v/binaries/invalid'),
+            uri: pot.resolve('www', '/apis/v/binaries/invalid'),
             method: 'PUT',
             formData: {
                 data: JSON.stringify(v0)

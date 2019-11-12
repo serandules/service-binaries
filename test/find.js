@@ -42,7 +42,7 @@ describe('GET /binaries', function () {
             return count-- > 0
         }, function (created) {
             request({
-                uri: pot.resolve('accounts', '/apis/v/binaries'),
+                uri: pot.resolve('www', '/apis/v/binaries'),
                 method: 'POST',
                 formData: {
                     data: JSON.stringify({
@@ -66,7 +66,7 @@ describe('GET /binaries', function () {
                 b.type.should.equal('image');
                 b.content.should.equal(b.id);
                 should.exist(r.headers['location']);
-                r.headers['location'].should.equal(pot.resolve('accounts', '/apis/v/binaries/' + b.id));
+                r.headers['location'].should.equal(pot.resolve('www', '/apis/v/binaries/' + b.id));
                 created();
             });
         }, done);
@@ -123,7 +123,7 @@ describe('GET /binaries', function () {
 
     it('default paging', function (done) {
         request({
-            uri: pot.resolve('accounts', '/apis/v/binaries'),
+            uri: pot.resolve('www', '/apis/v/binaries'),
             method: 'GET',
             auth: {
                 bearer: client.users[0].token
@@ -139,7 +139,7 @@ describe('GET /binaries', function () {
             b.length.should.equal(10);
             validateBinaries(b);
             request({
-                uri: pot.resolve('accounts', '/apis/v/binaries'),
+                uri: pot.resolve('www', '/apis/v/binaries'),
                 method: 'GET',
                 auth: {
                     bearer: client.users[0].token
@@ -167,7 +167,7 @@ describe('GET /binaries', function () {
 
     it('by user0', function (done) {
         request({
-            uri: pot.resolve('accounts', '/apis/v/binaries'),
+            uri: pot.resolve('www', '/apis/v/binaries'),
             method: 'GET',
             auth: {
                 bearer: client.users[0].token
@@ -186,7 +186,7 @@ describe('GET /binaries', function () {
                 v.user.should.equal(client.users[0].profile.id);
             });
             request({
-                uri: pot.resolve('accounts', '/apis/v/binaries'),
+                uri: pot.resolve('www', '/apis/v/binaries'),
                 method: 'GET',
                 auth: {
                     bearer: client.users[0].token
@@ -217,7 +217,7 @@ describe('GET /binaries', function () {
 
     it('by user1', function (done) {
         request({
-            uri: pot.resolve('accounts', '/apis/v/binaries'),
+            uri: pot.resolve('www', '/apis/v/binaries'),
             method: 'GET',
             auth: {
                 bearer: client.users[1].token
@@ -236,7 +236,7 @@ describe('GET /binaries', function () {
                 v.user.should.equal(client.users[1].profile.id);
             });
             request({
-                uri: pot.resolve('accounts', '/apis/v/binaries'),
+                uri: pot.resolve('www', '/apis/v/binaries'),
                 method: 'GET',
                 auth: {
                     bearer: client.users[1].token
@@ -271,7 +271,7 @@ describe('GET /binaries', function () {
                 return done(err);
             }
             request({
-                uri: pot.resolve('accounts', '/apis/v/binaries'),
+                uri: pot.resolve('www', '/apis/v/binaries'),
                 method: 'GET',
                 auth: {
                     bearer: client.users[2].token
@@ -299,7 +299,7 @@ describe('GET /binaries', function () {
                         return done(err);
                     }
                     request({
-                        uri: pot.resolve('accounts', '/apis/v/binaries'),
+                        uri: pot.resolve('www', '/apis/v/binaries'),
                         method: 'GET',
                         auth: {
                             bearer: client.users[1].token
