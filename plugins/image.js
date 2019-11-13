@@ -32,7 +32,7 @@ var save800x450 = function (id, path, done) {
       width: 800,
       height: 450
     })
-    .composite([{ input: overlay, top: 340, left: 210, blend: 'screen'}])
+    .composite([{ input: overlay, top: 201, left: 214, blend: 'screen'}])
     .jpeg()
     .on('error', function (err) {
       log.error('images:crop', 'id:%s', id, err);
