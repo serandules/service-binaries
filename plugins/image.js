@@ -32,7 +32,7 @@ var save800x450 = function (id, path, done) {
       width: 800,
       height: 450
     })
-    .composite([{ input: overlay, top: 201, left: 214, blend: 'screen'}])
+    .composite([{input: overlay, top: 201, left: 214, blend: 'screen'}])
     .jpeg()
     .on('error', function (err) {
       log.error('images:crop', 'id:%s', id, err);
@@ -44,7 +44,6 @@ var save800x450 = function (id, path, done) {
 var save288x162 = function (id, path, done) {
   var name = 'images/288x162/' + id;
   var transformer = sharp()
-    .resize(288, 162)
     .resize({
       width: 288,
       height: 162
@@ -57,8 +56,23 @@ var save288x162 = function (id, path, done) {
   upload(name, fs.createReadStream(path).pipe(transformer), done);
 };
 
+var save160x160 = function (id, path, done) {
+  var name = 'images/160x160/' + id;
+  var transformer = sharp()
+    .resize({
+      width: 160,
+      height: 160
+    })
+    .jpeg()
+    .on('error', function (err) {
+      log.error('images:crop', 'id:%s', id, err);
+      done(err);
+    });
+  upload(name, fs.createReadStream(path).pipe(transformer), done);
+};
+
 module.exports = function (id, path, done) {
-  var tasks = [save288x162, save800x450];
+  var tasks = [save288x162, save160x160, save800x450];
   async.each(tasks, function (task, taskDone) {
     task(id, path, taskDone);
   }, done);
