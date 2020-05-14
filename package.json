@@ -10,7 +10,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "mongoose": "5.1.8",
+    "mongoose": "5.9.5",
     "express": "4.*",
     "lodash": "4.17.4",
     "nconf": "0.10.0",
