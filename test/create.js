@@ -46,7 +46,7 @@ describe('POST /binaries', function () {
 
   it('with no media type', function (done) {
     request({
-      uri: pot.resolve('www', '/apis/v/binaries'),
+      uri: pot.resolve('apis', '/v/binaries'),
       method: 'POST',
       auth: {
         bearer: client.users[0].token
@@ -67,7 +67,7 @@ describe('POST /binaries', function () {
 
   it('with unsupported media type', function (done) {
     request({
-      uri: pot.resolve('www', '/apis/v/binaries'),
+      uri: pot.resolve('apis', '/v/binaries'),
       method: 'POST',
       headers: {
         'Content-Type': 'application/xml'
@@ -91,7 +91,7 @@ describe('POST /binaries', function () {
 
   it('without data', function (done) {
     request({
-      uri: pot.resolve('www', '/apis/v/binaries'),
+      uri: pot.resolve('apis', '/v/binaries'),
       method: 'POST',
       formData: {
         data: JSON.stringify({
@@ -121,7 +121,7 @@ describe('POST /binaries', function () {
 
   it('without type field', function (done) {
     request({
-      uri: pot.resolve('www', '/apis/v/binaries'),
+      uri: pot.resolve('apis', '/v/binaries'),
       method: 'POST',
       formData: {
         data: JSON.stringify({}),
@@ -150,7 +150,7 @@ describe('POST /binaries', function () {
 
   it('with valid fields', function (done) {
     request({
-      uri: pot.resolve('www', '/apis/v/binaries'),
+      uri: pot.resolve('apis', '/v/binaries'),
       method: 'POST',
       formData: {
         data: JSON.stringify({
@@ -178,7 +178,7 @@ describe('POST /binaries', function () {
       b.type.should.equal('image');
       b.content.should.equal(b.id);
       should.exist(r.headers['location']);
-      r.headers['location'].should.equal(pot.resolve('www', '/apis/v/binaries/' + b.id));
+      r.headers['location'].should.equal(pot.resolve('apis', '/v/binaries/' + b.id));
       validateImages(b.id, done);
     });
   });

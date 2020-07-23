@@ -41,7 +41,7 @@ describe('GET /binaries/:id', function () {
       return count-- > 0
     }, function (created) {
       request({
-        uri: pot.resolve('www', '/apis/v/binaries'),
+        uri: pot.resolve('apis', '/v/binaries'),
         method: 'POST',
         formData: {
           data: JSON.stringify({
@@ -65,7 +65,7 @@ describe('GET /binaries/:id', function () {
         b.type.should.equal('image');
         b.content.should.equal(b.id);
         should.exist(r.headers['location']);
-        r.headers['location'].should.equal(pot.resolve('www', '/apis/v/binaries/' + b.id));
+        r.headers['location'].should.equal(pot.resolve('apis', '/v/binaries/' + b.id));
         created();
       });
     }, done);
@@ -85,7 +85,7 @@ describe('GET /binaries/:id', function () {
 
   it('invalid id', function (done) {
     request({
-      uri: pot.resolve('www', '/apis/v/binaries/undefined'),
+      uri: pot.resolve('apis', '/v/binaries/undefined'),
       method: 'GET',
       auth: {
         bearer: client.users[0].token
@@ -106,7 +106,7 @@ describe('GET /binaries/:id', function () {
 
   it('owner can access', function (done) {
     request({
-      uri: pot.resolve('www', '/apis/v/binaries'),
+      uri: pot.resolve('apis', '/v/binaries'),
       method: 'GET',
       auth: {
         bearer: client.users[0].token
@@ -122,7 +122,7 @@ describe('GET /binaries/:id', function () {
       b.length.should.equal(1);
       validateBinary(b);
       request({
-        uri: pot.resolve('www', '/apis/v/binaries/' + b[0].id),
+        uri: pot.resolve('apis', '/v/binaries/' + b[0].id),
         method: 'GET',
         auth: {
           bearer: client.users[0].token
@@ -142,7 +142,7 @@ describe('GET /binaries/:id', function () {
 
   it('others cannot access', function (done) {
     request({
-      uri: pot.resolve('www', '/apis/v/binaries'),
+      uri: pot.resolve('apis', '/v/binaries'),
       method: 'GET',
       auth: {
         bearer: client.users[0].token
@@ -158,7 +158,7 @@ describe('GET /binaries/:id', function () {
       b.length.should.equal(1);
       validateBinary(b);
       request({
-        uri: pot.resolve('www', '/apis/v/binaries/' + b[0].id),
+        uri: pot.resolve('apis', '/v/binaries/' + b[0].id),
         method: 'GET',
         auth: {
           bearer: client.users[1].token
@@ -180,7 +180,7 @@ describe('GET /binaries/:id', function () {
 
   it('can be accessed by anyone when public', function (done) {
     request({
-      uri: pot.resolve('www', '/apis/v/binaries'),
+      uri: pot.resolve('apis', '/v/binaries'),
       method: 'GET',
       auth: {
         bearer: client.users[0].token
@@ -197,7 +197,7 @@ describe('GET /binaries/:id', function () {
       validateBinary(b);
       var binary = b[0];
       request({
-        uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
+        uri: pot.resolve('apis', '/v/binaries/' + binary.id),
         method: 'GET',
         auth: {
           bearer: client.users[1].token
@@ -213,7 +213,7 @@ describe('GET /binaries/:id', function () {
         should.exist(b.message);
         b.code.should.equal(errors.notFound().data.code);
         request({
-          uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
+          uri: pot.resolve('apis', '/v/binaries/' + binary.id),
           method: 'GET',
           auth: {
             bearer: client.users[1].token
@@ -228,12 +228,12 @@ describe('GET /binaries/:id', function () {
           should.exist(b.code);
           should.exist(b.message);
           b.code.should.equal(errors.notFound().data.code);
-          pot.publish('accounts', 'binaries', binary.id, client.users[0].token, client.admin.token, function (err) {
+          pot.publish('binaries', binary.id, client.users[0].token, client.admin.token, function (err) {
             if (err) {
               return done(err);
             }
             request({
-              uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
+              uri: pot.resolve('apis', '/v/binaries/' + binary.id),
               method: 'GET',
               auth: {
                 bearer: client.users[1].token
@@ -247,7 +247,7 @@ describe('GET /binaries/:id', function () {
               should.exist(b);
               validateBinary([b]);
               request({
-                uri: pot.resolve('www', '/apis/v/binaries/' + binary.id),
+                uri: pot.resolve('apis', '/v/binaries/' + binary.id),
                 method: 'GET',
                 auth: {
                   bearer: client.users[2].token

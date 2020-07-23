@@ -26,6 +26,7 @@ var upload = function (name, stream, done) {
 };
 
 var save800x450 = function (id, path, done) {
+  done = utils.once(done);
   var name = 'images/800x450/' + id;
   var transformer = sharp()
     .resize({
@@ -42,6 +43,7 @@ var save800x450 = function (id, path, done) {
 };
 
 var save288x162 = function (id, path, done) {
+  done = utils.once(done);
   var name = 'images/288x162/' + id;
   var transformer = sharp()
     .resize({
@@ -57,6 +59,7 @@ var save288x162 = function (id, path, done) {
 };
 
 var save160x160 = function (id, path, done) {
+  done = utils.once(done);
   var name = 'images/160x160/' + id;
   var transformer = sharp()
     .resize({

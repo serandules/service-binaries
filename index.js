@@ -77,6 +77,7 @@ module.exports = function (router, done) {
     });
 
   router.post('/:id',
+    serandi.id,
     serandi.json,
     serandi.transit({
       workflow: 'model',
@@ -84,6 +85,7 @@ module.exports = function (router, done) {
   }));
 
   router.put('/:id',
+    serandi.id,
     serandi.multipart,
     serandi.update(Binaries),
     function (req, res, next) {
@@ -111,6 +113,7 @@ module.exports = function (router, done) {
     });
 
   router.get('/:id',
+    serandi.id,
     serandi.findOne(Binaries),
     function (req, res, next) {
       model.findOne(req.ctx, function (err, binary) {
@@ -136,6 +139,7 @@ module.exports = function (router, done) {
     });
 
   router.delete('/:id',
+    serandi.id,
     serandi.remove(Binaries),
     function (req, res, next) {
       model.remove(req.ctx, function (err) {
